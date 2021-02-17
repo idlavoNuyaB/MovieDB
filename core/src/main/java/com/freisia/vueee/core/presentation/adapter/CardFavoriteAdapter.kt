@@ -8,11 +8,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.freisia.vueee.R
+import com.freisia.vueee.core.R
 import com.freisia.vueee.core.presentation.model.movie.Movie
 import com.freisia.vueee.core.presentation.model.tv.TV
 import com.freisia.vueee.core.utils.Constant
-import com.freisia.vueee.databinding.LayoutItemCardBinding
+import com.freisia.vueee.core.databinding.LayoutItemCardBinding
 
 class CardFavoriteAdapter<T> :
     PagedListAdapter<T, CardFavoriteAdapter<T>.CardViewHolder>(

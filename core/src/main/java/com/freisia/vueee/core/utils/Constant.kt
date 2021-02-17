@@ -1,6 +1,6 @@
 package com.freisia.vueee.core.utils
 
-import com.freisia.vueee.BuildConfig
+import com.freisia.vueee.core.BuildConfig
 
 class Constant {
     companion object{

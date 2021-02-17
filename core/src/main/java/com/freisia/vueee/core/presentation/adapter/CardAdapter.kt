@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.freisia.vueee.R
+import com.freisia.vueee.core.R
 import com.freisia.vueee.core.presentation.model.movie.SearchMovie
 import com.freisia.vueee.core.presentation.model.tv.SearchTV
 import com.freisia.vueee.core.utils.Constant
-import com.freisia.vueee.databinding.LayoutItemCardBinding
+import com.freisia.vueee.core.databinding.LayoutItemCardBinding
 
 class CardAdapter<T>(movie: ArrayList<T>, recyclerView: RecyclerView) : RecyclerView.Adapter<CardAdapter.CardViewHolder<T>>() {
     private var filtered : ArrayList<T> = ArrayList()
