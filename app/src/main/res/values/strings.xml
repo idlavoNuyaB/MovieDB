@@ -1,0 +1,10 @@
+<resources>
+    <string name="tab1">Movies</string>
+    <string name="tab2">TVShows</string>
+    <string name="title">Title:</string>
+    <string name="reviews">User Review:</string>
+    <string name="review">%s%% User Score </string>
+    <string name="notfound">The item not found because the action is interrupted</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="empty">Empty Item</string>
+</resources>

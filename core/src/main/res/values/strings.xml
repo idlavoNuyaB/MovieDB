@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Vueee</string>
+    <string name="logo">Logo</string>
+    <string name="logo_name">Vueee by Freisia</string>
+    <string name="tab1">Movies</string>
+    <string name="tab2">TVShows</string>
+    <string name="title">Title:</string>
+    <string name="duration">Duration:</string>
+    <string name="genre">Genre:</string>
+    <string name="rating">Rating:</string>
+    <string name="reviews">User Review:</string>
+    <string name="broadcast">Premiere:</string>
+    <string name="description">Description:</string>
+    <string name="review">%s%% User Score </string>
+    <string name="favourite">Favourite</string>
+    <string name="empty">Empty Item</string>
+    <string-array name="spinner">
+        <item>Popular</item>
+        <item>Now Playing</item>
+        <item>Top Rated</item>
+    </string-array>
+    <string-array name="spinnerTV">
+        <item>Popular</item>
+        <item>On Air</item>
+        <item>Top Rated</item>
+    </string-array>
+    <string name="messagedelete">Are you sure to delete all from Favorite Movies?</string>
+    <string name="messagedeleteTV">Are you sure to delete all from Favorite TVShows?</string>
+    <string name="delete">Delete all Movies</string>
+    <string name="deleteTV">Delete all TVShows</string>
+    <string name="cancel">Cancel to delete</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="notfoundrating">-</string>
+</resources>

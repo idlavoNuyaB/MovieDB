@@ -1,0 +1,4 @@
+include ':favorite'
+include ':core'
+rootProject.name='Vueee'
+include ':app'
