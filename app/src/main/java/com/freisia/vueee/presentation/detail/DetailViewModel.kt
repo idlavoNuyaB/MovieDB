@@ -14,8 +14,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.ref.WeakReference
 
-class DetailViewModel <T,Z>(private val usecase: T, private val context: Context) : ViewModel(){
+class DetailViewModel <T,Z>(private val usecase: T, private val weakContext: WeakReference<Context>) : ViewModel(){
     var listData = MutableLiveData<Z>()
     var isLoading = MutableLiveData<Boolean>()
     var rate = MutableLiveData<String>()
@@ -96,8 +97,9 @@ class DetailViewModel <T,Z>(private val usecase: T, private val context: Context
 
                                         }
                                         else -> {
-                                            rate.value = context.resources
-                                                        .getString(R.string.notfoundrating)
+                                            val context = weakContext.get()
+                                            rate.value = context?.resources
+                                                ?.getString(R.string.notfoundrating)
                                         }
                                     }
                                 }

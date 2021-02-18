@@ -63,9 +63,9 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
             viewModel.getData()
         }
-        viewModel.isLoading.observeForever(observeLoading())
-        viewModel.isFound.observeForever(observeFound())
-        viewModel.listData.observeForever(observeData())
+        viewModel.isLoading.observe(this.viewLifecycleOwner,observeLoading())
+        viewModel.isFound.observe(this.viewLifecycleOwner,observeFound())
+        viewModel.listData.observe(this.viewLifecycleOwner,observeData())
         spinnerCheck()
         cardGridRecyclerView()
     }
@@ -133,9 +133,9 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                             viewModel.getData()
                         }
                         checkSpinner = 1
-                        viewModel.isLoading.observeForever(observeLoading())
-                        viewModel.isFound.observeForever(observeFound())
-                        viewModel.listData.observeForever(observeData())
+                        viewModel.isLoading.observe(requireActivity(),observeLoading())
+                        viewModel.isFound.observe(requireActivity(),observeFound())
+                        viewModel.listData.observe(requireActivity(),observeData())
                     }
                     1 -> {
                         if(!detail.isNullOrEmpty()) {
@@ -148,9 +148,9 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                             viewModel.getOnAirData()
                         }
                         checkSpinner = 2
-                        viewModel.isLoading.observeForever(observeLoading())
-                        viewModel.isFound.observeForever(observeFound())
-                        viewModel.listData.observeForever(observeData())
+                        viewModel.isLoading.observe(requireActivity(),observeLoading())
+                        viewModel.isFound.observe(requireActivity(),observeFound())
+                        viewModel.listData.observe(requireActivity(),observeData())
                     }
                     2 -> {
                         if(!detail.isNullOrEmpty()) {
@@ -163,9 +163,9 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                             viewModel.getTopRated()
                         }
                         checkSpinner = 3
-                        viewModel.isLoading.observeForever(observeLoading())
-                        viewModel.isFound.observeForever(observeFound())
-                        viewModel.listData.observeForever(observeData())
+                        viewModel.isLoading.observe(requireActivity(),observeLoading())
+                        viewModel.isFound.observe(requireActivity(),observeFound())
+                        viewModel.listData.observe(requireActivity(),observeData())
                     }
                 }
             }

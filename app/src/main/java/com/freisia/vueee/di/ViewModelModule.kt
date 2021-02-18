@@ -10,15 +10,16 @@ import com.freisia.vueee.presentation.list.tvshow.TVShowsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import java.lang.ref.WeakReference
 
 val viewmodelModule = module {
     viewModel{MoviesViewModel(get())}
     viewModel{TVShowsViewModel(get())}
     viewModel{(type: String) ->
         if(type == "movies" || type == "localmovies"){
-            DetailViewModel<MovieUseCase, Movie>(get(),androidContext())
+            DetailViewModel<MovieUseCase, Movie>(get(), WeakReference(androidContext()) )
         } else {
-            DetailViewModel<TVUseCase, TV>(get(),androidContext())
+            DetailViewModel<TVUseCase, TV>(get(),WeakReference(androidContext()))
         }
     }
 

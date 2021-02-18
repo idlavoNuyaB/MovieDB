@@ -129,10 +129,10 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
             detailViewModel.getData(movies.id)
         }
-        detailViewModel.isLoading.observeForever(observeLoading())
-        detailViewModel.isFound.observeForever(observeFound())
-        detailViewModel.listData.observeForever(observeRemoteDataMovie())
-        detailViewModel.localData?.observeForever(observeLocalDataMovie(movies.id,detailViewModel))
+        detailViewModel.isLoading.observe(this,observeLoading())
+        detailViewModel.isFound.observe(this,observeFound())
+        detailViewModel.listData.observe(this,observeRemoteDataMovie())
+        detailViewModel.localData?.observe(this,observeLocalDataMovie(movies.id,detailViewModel))
     }
 
     private fun remoteTV(type: String){
@@ -142,18 +142,18 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
             detailViewModel.getData(movie.id)
         }
-        detailViewModel.isLoading.observeForever(observeLoading())
-        detailViewModel.isFound.observeForever(observeFound())
-        detailViewModel.listData.observeForever(observeRemoteDataTV())
-        detailViewModel.rate.observeForever(observeRateTV(type,binding.rating))
-        detailViewModel.localData?.observeForever(observeLocalDataTV(movie.id,detailViewModel))
+        detailViewModel.isLoading.observe(this,observeLoading())
+        detailViewModel.isFound.observe(this,observeFound())
+        detailViewModel.listData.observe(this,observeRemoteDataTV())
+        detailViewModel.rate.observe(this,observeRateTV(type,binding.rating))
+        detailViewModel.localData?.observe(this,observeLocalDataTV(movie.id,detailViewModel))
     }
 
     private fun localMovie(type: String){
         val detailViewModel:DetailViewModel<MovieUseCase, Movie> by viewModel{parametersOf(type)}
         val movies = intent.getParcelableExtra(EXTRA_DETAIL) as Movie
-        detailViewModel.isLoading.observeForever(observeLoading())
-        detailViewModel.isFound.observeForever(observeFound())
+        detailViewModel.isLoading.observe(this,observeLoading())
+        detailViewModel.isFound.observe(this,observeFound())
         if(isFound){
             val collapsingToolbar  = binding.main
             val appBarLayout = binding.appbar
@@ -203,7 +203,7 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         } else {
             notFound()
         }
-        detailViewModel.localData?.observeForever(observeLocalDataMovie(movies.id,detailViewModel))
+        detailViewModel.localData?.observe(this,observeLocalDataMovie(movies.id,detailViewModel))
     }
 
     private fun localTV(type: String){
@@ -213,8 +213,8 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
             detailViewModel.getData(movie.id)
         }
-        detailViewModel.isLoading.observeForever(observeLoading())
-        detailViewModel.isFound.observeForever(observeFound())
+        detailViewModel.isLoading.observe(this,observeLoading())
+        detailViewModel.isFound.observe(this,observeFound())
         if(isFound){
             val collapsingToolbar = binding.main
             val appBarLayout = binding.appbar
@@ -248,11 +248,11 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
             val reviews = movie.vote_average * 10
             review.text = getString(R.string.review, reviews.toString())
             tempTV = movie
-            detailViewModel.rate.observeForever(observeRateTV(type,binding.rating))
+            detailViewModel.rate.observe(this,observeRateTV(type,binding.rating))
         } else {
             notFound()
         }
-        detailViewModel.localData?.observeForever(observeLocalDataTV(movie.id,detailViewModel))
+        detailViewModel.localData?.observe(this,observeLocalDataTV(movie.id,detailViewModel))
     }
 
     private fun checkDataMovie(
