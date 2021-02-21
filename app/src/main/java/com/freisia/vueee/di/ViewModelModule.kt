@@ -13,8 +13,8 @@ import org.koin.dsl.module
 import java.lang.ref.WeakReference
 
 val viewmodelModule = module {
-    viewModel{MoviesViewModel(get())}
-    viewModel{TVShowsViewModel(get())}
+    single{MoviesViewModel(get())}
+    single{TVShowsViewModel(get())}
     viewModel{(type: String) ->
         if(type == "movies" || type == "localmovies"){
             DetailViewModel<MovieUseCase, Movie>(get(), WeakReference(androidContext()) )

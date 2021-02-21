@@ -27,6 +27,12 @@ interface APIService {
                                   @Query("api_key") api_key: String = Constant.TOKEN_API,
                                   @Query("language") language: String = Constant.LANGUAGE): Response<ResultMovieResponse>
 
+    @GET(Constant.SEARCH_MOVIE)
+    suspend fun getSearchMovies(@Query("page") page: Int,
+                                @Query("query") query: String,
+                                @Query("api_key") api_key: String = Constant.TOKEN_API,
+                                @Query("language") language: String = Constant.LANGUAGE): Response<ResultMovieResponse>
+
     @GET(Constant.GET_TV)
     suspend fun getTV(@Query("page") page: Int,
                       @Query("api_key") api_key: String = Constant.TOKEN_API,
@@ -41,6 +47,12 @@ interface APIService {
     suspend fun getTopRatedTV(@Query("page") page: Int,
                               @Query("api_key") api_key: String = Constant.TOKEN_API,
                               @Query("language") language: String = Constant.LANGUAGE): Response<ResultTVResponse>
+
+    @GET(Constant.SEARCH_TV)
+    suspend fun getSearchTV(@Query("page") page: Int,
+                            @Query("query") query: String,
+                            @Query("api_key") api_key: String = Constant.TOKEN_API,
+                            @Query("language") language: String = Constant.LANGUAGE): Response<ResultTVResponse>
 
     @GET(Constant.GET_TV_RATING)
     suspend fun getRatingTV(@Path("tv_id") tv_id: Int,

@@ -9,6 +9,7 @@ import com.freisia.vueee.core.presentation.model.tv.SearchTV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,15 +18,13 @@ class TVShowsViewModel(private val useCase: TVUseCase) : ViewModel() {
     var listData = MutableLiveData<List<SearchTV>>()
     var isLoading = MutableLiveData<Boolean>()
     var isFound = MutableLiveData<Boolean>()
-    private var pageNP = 1
     private var page = 1
-    private var pageTP = 1
     private var totalPages = 500
+    private var searchText: String = ""
 
     fun reset(){
         page = 1
-        pageNP = 1
-        pageTP = 1
+        searchText = ""
     }
 
     fun getData() = viewModelScope.launch(Dispatchers.IO) {
@@ -151,6 +150,65 @@ class TVShowsViewModel(private val useCase: TVUseCase) : ViewModel() {
         }
     }
 
+    fun getSearch(query: String) = viewModelScope.launch(Dispatchers.IO) {
+        try{
+            withContext(Dispatchers.Main){
+                isLoading.value = true
+            }
+            if(searchText != query){
+                reset()
+            }
+            searchText = query
+            getDataSearch()
+        }  catch (e: Exception){
+            withContext(Dispatchers.Main){
+                isFound.value = false
+                isLoading.value = false
+            }
+        }
+    }
+
+    private fun getDataSearch() = viewModelScope.launch(Dispatchers.IO){
+        try {
+            val response = useCase.getSearchRemoteData(page,searchText)
+            withContext(Dispatchers.Main){
+                response.debounce(500).onStart {isLoading.value = true}.catch {
+                    isLoading.value = false
+                    isFound.value = true
+                }.collect {
+                    when(it){
+                        is ApiResponse.Success -> {
+                            val data = it.data
+                            if(!data.result.isNullOrEmpty()){
+                                listData.value = data.result
+                                totalPages = data.totalPages
+                                isLoading.value = false
+                                isFound.value = true
+                            }
+                            else{
+                                isLoading.value = false
+                                isFound.value = false
+                            }
+                        }
+                        is ApiResponse.Empty -> {
+                            isLoading.value = false
+                            isFound.value = false
+                        }
+                        else -> {
+                            isLoading.value = false
+                            isFound.value = false
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception){
+            withContext(Dispatchers.Main){
+                isFound.value = false
+                isLoading.value = false
+            }
+        }
+    }
+
     fun onLoadMore(spinner: Int){
         if(spinner == 1){
             if(page <= totalPages){
@@ -158,14 +216,19 @@ class TVShowsViewModel(private val useCase: TVUseCase) : ViewModel() {
                 getData()
             }
         } else if(spinner == 2){
-            if(pageNP <= totalPages){
-                pageNP++
+            if(page <= totalPages){
+                page++
                 getOnAirData()
             }
         } else if(spinner == 3){
-            if(pageTP <= totalPages){
-                pageTP++
+            if(page <= totalPages){
+                page++
                 getTopRated()
+            }
+        } else{
+            if(page <= totalPages){
+                page++
+                getDataSearch()
             }
         }
     }

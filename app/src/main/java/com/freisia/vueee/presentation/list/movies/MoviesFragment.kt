@@ -1,16 +1,19 @@
 package com.freisia.vueee.presentation.list.movies
 
+import android.annotation.SuppressLint
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
@@ -22,11 +25,10 @@ import com.freisia.vueee.core.presentation.adapter.CardAdapter
 import com.freisia.vueee.core.presentation.model.movie.SearchMovie
 import com.freisia.vueee.databinding.MoviesFragmentBinding
 import com.freisia.vueee.presentation.detail.DetailActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.ref.WeakReference
+
 
 class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
 
@@ -49,11 +51,13 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = MoviesFragmentBinding.inflate(inflater,container,false)
+        binding = MoviesFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.retainInstance = true
@@ -65,16 +69,72 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
             viewModel.getData()
         }
-        viewModel.isLoading.observe(this.viewLifecycleOwner,observeLoading())
-        viewModel.isFound.observe(this.viewLifecycleOwner,observeFound())
-        viewModel.listData.observe(this.viewLifecycleOwner,observeData())
+        data()
         spinnerCheck()
         cardGridRecyclerView()
+        binding.layout.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (binding.search.isFocusable) {
+                    val outRect = Rect()
+                    binding.search.getGlobalVisibleRect(outRect)
+                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        binding.search.clearFocus()
+                        binding.layout.performClick()
+                        hideKeyboard(v)
+                    }
+                }
+            }
+            false
+        }
+        binding.search.setOnDebounceTextWatcher(CoroutineScope(Dispatchers.Main)){
+            if(it != ""){
+                Log.e("CUK",it)
+                search(it,binding.search)
+            } else if(it == "" && checkSpinner == 0){
+                Log.e("CUK",it)
+                search(it,binding.search)
+            }
+        }
+    }
+
+    private fun hideKeyboard(v: View){
+        val a: InputMethodManager = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        a.hideSoftInputFromWindow(v.windowToken, 0)
+    }
+
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    private fun search(it : String, editText: EditText){
+        reset()
+        coroutineJob?.cancel()
+        coroutineJob = CoroutineScope(Dispatchers.IO).launch {
+            viewModel.getSearch(WeakReference(editText),it)
+        }
+        data()
+        binding.spinner.setSelection(0)
+        checkSpinner = 0
+    }
+
+    private fun reset(){
+        if (!detail.isNullOrEmpty()) {
+            cardAdapter.resetData()
+            detail = ArrayList()
+        }
+        coroutineJob?.cancel()
+        viewModel.reset()
+    }
+
+    private fun data(){
+        viewModel.isLoading.observe(this.viewLifecycleOwner, observeLoading())
+        viewModel.isFound.observe(this.viewLifecycleOwner, observeFound())
+        viewModel.listData.observe(this.viewLifecycleOwner, observeData())
     }
 
     private fun spinnerCheck(){
-        val adapters = object : ArrayAdapter<String>(this.requireContext(),android.R.layout.simple_spinner_item,
-            resources.getStringArray(R.array.spinner)){
+        val adapters = object : ArrayAdapter<String>(
+            this.requireContext(), android.R.layout.simple_spinner_item,
+            resources.getStringArray(R.array.spinner)
+        ){
             override fun getDropDownView(
                 position: Int,
                 convertView: View?,
@@ -108,50 +168,29 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
                 id: Long
             ) {
                 when(position){
-                    0 -> {
-                        if(!detail.isNullOrEmpty()){
-                            cardAdapter.resetData()
-                            detail = ArrayList()
-                        }
-                        coroutineJob?.cancel()
-                        viewModel.reset()
+                    1 -> {
+                        reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getData()
                         }
                         checkSpinner = 1
-                        viewModel.isLoading.observe(requireActivity(),observeLoading())
-                        viewModel.isFound.observe(requireActivity(),observeFound())
-                        viewModel.listData.observe(requireActivity(),observeData())
+                        data()
                     }
-                    1 -> {
-                        if(!detail.isNullOrEmpty()) {
-                            cardAdapter.resetData()
-                            detail = ArrayList()
-                        }
-                        coroutineJob?.cancel()
-                        viewModel.reset()
+                    2 -> {
+                        reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getNowPlaying()
                         }
                         checkSpinner = 2
-                        viewModel.isLoading.observe(requireActivity(),observeLoading())
-                        viewModel.isFound.observe(requireActivity(),observeFound())
-                        viewModel.listData.observe(requireActivity(),observeData())
+                        data()
                     }
-                    2 -> {
-                        if(!detail.isNullOrEmpty()) {
-                            cardAdapter.resetData()
-                            detail = ArrayList()
-                        }
-                        coroutineJob?.cancel()
-                        viewModel.reset()
+                    3 -> {
+                        reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getTopRated()
                         }
                         checkSpinner = 3
-                        viewModel.isLoading.observe(requireActivity(),observeLoading())
-                        viewModel.isFound.observe(requireActivity(),observeFound())
-                        viewModel.listData.observe(requireActivity(),observeData())
+                        data()
                     }
                 }
             }
@@ -159,8 +198,8 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
-
         }
+        binding.spinner.setSelection(1)
     }
 
     override fun onPause() {
@@ -168,6 +207,7 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         viewModel.isFound.removeObserver(observeFound())
         viewModel.isLoading.removeObserver(observeLoading())
         viewModel.listData.removeObserver(observeData())
+        binding.search.removeOnDebounceTextWatcher()
         super.onPause()
     }
 
@@ -176,17 +216,18 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         viewModel.isFound.removeObserver(observeFound())
         viewModel.isLoading.removeObserver(observeLoading())
         viewModel.listData.removeObserver(observeData())
+        binding.search.removeOnDebounceTextWatcher()
         super.onDestroy()
     }
 
     private fun cardGridRecyclerView(){
         binding.list.itemAnimator = DefaultItemAnimator()
-        binding.list.layoutManager = GridLayoutManager(this.requireActivity(),2)
+        binding.list.layoutManager = GridLayoutManager(this.requireActivity(), 2)
         cardAdapter = CardAdapter(detail, binding.list)
         cardAdapter.onItemClick = {
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra(DetailActivity.EXTRA_DETAIL, it)
-            intent.putExtra(DetailActivity.TYPE_DETAIL,data)
+            intent.putExtra(DetailActivity.TYPE_DETAIL, data)
             intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             startActivity(intent)
         }
@@ -194,6 +235,8 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         binding.list.adapter = cardAdapter
     }
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun onGridLoadMore() {
         check++
         coroutineJob?.cancel()

@@ -141,4 +141,26 @@ class TVUseCase (private val repository: TVRepository) : IUseCase<ApiResponse<Re
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    override suspend fun getSearchRemoteData(
+        page: Int,
+        query: String
+    ): Flow<ApiResponse<ResultTV>> {
+        return flow{
+            repository.getSearchRemoteData(page, query).collect {
+                when(it){
+                    is ApiResponse.Success -> {
+                        val data = it.data
+                        emit(ApiResponse.Success(DataMapper.mapResultTVDomainToPresentation(data)))
+                    }
+                    is ApiResponse.Empty -> {
+                        emit( ApiResponse.Empty )
+                    }
+                    is ApiResponse.Error -> {
+                        emit(ApiResponse.Error("Error"))
+                    }
+                }
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 }

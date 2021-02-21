@@ -146,4 +146,26 @@ class TVRepository(
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    override suspend fun getSearchRemoteData(
+        page: Int,
+        query: String
+    ): Flow<ApiResponse<ResultTVDomain>> {
+        return flow{
+            remoteDataSource.getSearchList(page, query).collect {
+                when(it){
+                    is ApiResponse.Success -> {
+                        val data = it.data
+                        emit(ApiResponse.Success(DataMapper.mapResultTVResponseToDomain(data)))
+                    }
+                    is ApiResponse.Empty -> {
+                        emit( ApiResponse.Empty )
+                    }
+                    is ApiResponse.Error -> {
+                        emit(ApiResponse.Error("Error"))
+                    }
+                }
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 }

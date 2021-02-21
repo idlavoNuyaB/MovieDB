@@ -86,4 +86,19 @@ class TVRemoteDataSource(private val apiService: APIService){
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    suspend fun getSearchList(page: Int, query: String) : Flow<ApiResponse<ResultTVResponse>> {
+        return flow{
+            try{
+                val api = apiService.getSearchTV(page, query)
+                if(api.isSuccessful){
+                    emit(ApiResponse.Success(api.body() as ResultTVResponse))
+                } else{
+                    emit(ApiResponse.Empty)
+                }
+            } catch(e : Exception){
+                emit(ApiResponse.Error(e.toString()))
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 }

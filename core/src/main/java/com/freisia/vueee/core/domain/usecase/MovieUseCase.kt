@@ -122,4 +122,26 @@ class MovieUseCase(private val repository: MovieRepository) :
     override suspend fun deleteAllLocalData() {
         repository.deleteAllLocalData()
     }
+
+    override suspend fun getSearchRemoteData(
+        page: Int,
+        query: String
+    ): Flow<ApiResponse<ResultMovie>> {
+        return flow{
+            repository.getSearchRemoteData(page, query).collect {
+                when(it){
+                    is ApiResponse.Success -> {
+                        val data = it.data
+                        emit(ApiResponse.Success(DataMapper.mapResultMovieDomainToPresentation(data)))
+                    }
+                    is ApiResponse.Empty -> {
+                        emit( ApiResponse.Empty )
+                    }
+                    is ApiResponse.Error -> {
+                        emit(ApiResponse.Error("Error"))
+                    }
+                }
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 }

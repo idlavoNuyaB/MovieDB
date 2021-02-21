@@ -15,6 +15,7 @@
     <string name="favourite">Favourite</string>
     <string name="empty">Empty Item</string>
     <string-array name="spinner">
+        <item>NONE</item>
         <item>Popular</item>
         <item>Now Playing</item>
         <item>Top Rated</item>
