@@ -186,48 +186,24 @@ object DataMapper {
         )
     }
 
-    fun mapResultMovieResponseToDomain(input: ResultMovieResponse) : ResultMovieDomain {
-        return ResultMovieDomain(
-            totalPages = input.totalPages,
-            result = mapSearchMovieResponseToDomain(input.result)
+     fun mapSearchMovieResponseToDomain(input: SearchMovieResponse) : SearchMovieDomain{
+        return SearchMovieDomain(
+            poster_path = input.poster_path,
+            id = input.id,
+            backdrop_path = input.backdrop_path,
+            title = input.title,
+            vote_average = input.vote_average
         )
     }
 
-    private fun mapSearchMovieResponseToDomain(input: ArrayList<SearchMovieResponse>) : ArrayList<SearchMovieDomain>{
-        val searchList = ArrayList<SearchMovieDomain>()
-        input.map {
-            val movie = SearchMovieDomain(
-                poster_path = it.poster_path,
-                id = it.id,
-                backdrop_path = it.backdrop_path,
-                title = it.title,
-                vote_average = it.vote_average
-            )
-            searchList.add(movie)
-        }
-        return searchList
-    }
-
-    fun mapResultMovieDomainToPresentation(input: ResultMovieDomain) : ResultMovie {
-        return ResultMovie(
-            totalPages = input.totalPages,
-            result = mapSearchMovieDomainToPresentation(input.result)
+     fun mapSearchMovieDomainToPresentation(input: SearchMovieDomain) : SearchMovie{
+        return SearchMovie(
+            poster_path = input.poster_path,
+            id = input.id,
+            backdrop_path = input.backdrop_path,
+            title = input.title,
+            vote_average = input.vote_average
         )
-    }
-
-    private fun mapSearchMovieDomainToPresentation(input: ArrayList<SearchMovieDomain>) : ArrayList<SearchMovie>{
-        val searchList = ArrayList<SearchMovie>()
-        input.map {
-            val movie = SearchMovie(
-                poster_path = it.poster_path,
-                id = it.id,
-                backdrop_path = it.backdrop_path,
-                title = it.title,
-                vote_average = it.vote_average
-            )
-            searchList.add(movie)
-        }
-        return searchList
     }
 
     fun mapMovieRemoteResponseToDomain(input: MovieResponse) : MovieDomain {

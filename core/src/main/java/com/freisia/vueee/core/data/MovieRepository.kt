@@ -1,12 +1,14 @@
 package com.freisia.vueee.core.data
 
+import androidx.paging.DataSource
 import com.freisia.vueee.core.data.local.source.MovieLocalDataSource
 import com.freisia.vueee.core.data.remote.ApiResponse
 import com.freisia.vueee.core.data.remote.source.MovieRemoteDataSource
 import com.freisia.vueee.core.domain.model.movie.MovieDomain
-import com.freisia.vueee.core.domain.model.movie.ResultMovieDomain
+import com.freisia.vueee.core.domain.model.movie.SearchMovieDomain
 import com.freisia.vueee.core.domain.repository.IRepository
 import com.freisia.vueee.core.utils.DataMapper
+import com.freisia.vueee.core.utils.RemoteDataSourceFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -16,17 +18,17 @@ import kotlinx.coroutines.flow.flowOn
 class MovieRepository(
     private val remoteDataSource: MovieRemoteDataSource,
     private val localDataSource: MovieLocalDataSource,
-) : IRepository<ApiResponse<ResultMovieDomain>, MovieDomain> {
+) : IRepository<ApiResponse<DataSource.Factory<Int,SearchMovieDomain>?>, MovieDomain> {
 
-    override suspend fun getPopularRemoteData(page: Int): Flow<ApiResponse<ResultMovieDomain>> {
+    override suspend fun getPopularRemoteData(page: Int): Flow<ApiResponse<DataSource.Factory<Int,SearchMovieDomain>?>> {
         return flow {
-            remoteDataSource.getList(page).collect {
-                when(it){
+            remoteDataSource.getList(page).collect { apiResponse ->
+                when(apiResponse){
                     is ApiResponse.Success -> {
-                        val data = it.data
-                        if (!data.result.isNullOrEmpty()) {
-                            emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
+                        val data = apiResponse.data?.map {
+                            DataMapper.mapSearchMovieResponseToDomain(it)
                         }
+                        emit(ApiResponse.Success(data))
                     }
                     is ApiResponse.Empty -> {
                         emit( ApiResponse.Empty )
@@ -39,46 +41,48 @@ class MovieRepository(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getNowPlayingRemoteData(page: Int): Flow<ApiResponse<ResultMovieDomain>> {
-        return flow {
-            remoteDataSource.getNowPlayingList(page).collect {
-                when(it){
-                    is ApiResponse.Success -> {
-                        val data = it.data
-                        if (!data.result.isNullOrEmpty()) {
-                            emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
-                        }
-                    }
-                    is ApiResponse.Empty -> {
-                        emit( ApiResponse.Empty )
-                    }
-                    is ApiResponse.Error -> {
-                        emit(ApiResponse.Error("Error"))
-                    }
-                }
-            }
-        }.flowOn(Dispatchers.IO)
+    override suspend fun getNowPlayingRemoteData(page: Int): Flow<ApiResponse<DataSource.Factory<Int,SearchMovieDomain>?>> {
+//        return flow {
+//            remoteDataSource.getNowPlayingList(page).collect {
+//                when(it){
+//                    is ApiResponse.Success -> {
+//                        val data = it.data
+//                        if (!data.result.isNullOrEmpty()) {
+//                            emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
+//                        }
+//                    }
+//                    is ApiResponse.Empty -> {
+//                        emit( ApiResponse.Empty )
+//                    }
+//                    is ApiResponse.Error -> {
+//                        emit(ApiResponse.Error("Error"))
+//                    }
+//                }
+//            }
+//        }.flowOn(Dispatchers.IO)
+        TODO()
     }
 
-    override suspend fun getTopRatedRemoteData(page: Int): Flow<ApiResponse<ResultMovieDomain>> {
-        return flow {
-            remoteDataSource.getTopList(page).collect {
-                when(it){
-                    is ApiResponse.Success -> {
-                        val data = it.data
-                        if (!data.result.isNullOrEmpty()) {
-                            emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
-                        }
-                    }
-                    is ApiResponse.Empty -> {
-                        emit( ApiResponse.Empty )
-                    }
-                    is ApiResponse.Error -> {
-                        emit(ApiResponse.Error("Error"))
-                    }
-                }
-            }
-        }.flowOn(Dispatchers.IO)
+    override suspend fun getTopRatedRemoteData(page: Int): Flow<ApiResponse<DataSource.Factory<Int,SearchMovieDomain>?>> {
+//        return flow {
+//            remoteDataSource.getTopList(page).collect {
+//                when(it){
+//                    is ApiResponse.Success -> {
+//                        val data = it.data
+//                        if (!data.result.isNullOrEmpty()) {
+//                            emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
+//                        }
+//                    }
+//                    is ApiResponse.Empty -> {
+//                        emit( ApiResponse.Empty )
+//                    }
+//                    is ApiResponse.Error -> {
+//                        emit(ApiResponse.Error("Error"))
+//                    }
+//                }
+//            }
+//        }.flowOn(Dispatchers.IO)
+        TODO()
     }
 
     override suspend fun getDetailRemoteData(id:Int): Flow<ApiResponse<MovieDomain>> {
@@ -131,23 +135,25 @@ class MovieRepository(
     override suspend fun getSearchRemoteData(
         page: Int,
         query: String
-    ): Flow<ApiResponse<ResultMovieDomain>> {
-        return flow{
-            remoteDataSource.getSearchList(page, query).collect {
-                when(it){
-                    is ApiResponse.Success -> {
-                        val data = it.data
-                        emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
-                    }
-                    is ApiResponse.Empty -> {
-                        emit( ApiResponse.Empty )
-                    }
-                    is ApiResponse.Error -> {
-                        emit(ApiResponse.Error("Error"))
-                    }
-                }
-            }
-        }.flowOn(Dispatchers.IO)
+    ): Flow<ApiResponse<DataSource.Factory<Int,SearchMovieDomain>?>> {
+//        return flow{
+//            remoteDataSource.getSearchList(page, query).collect {
+//                when(it){
+//                    is ApiResponse.Success -> {
+//                        val data = it.data
+//                        emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
+//                    }
+//                    is ApiResponse.Empty -> {
+//                        emit( ApiResponse.Empty )
+//                    }
+//                    is ApiResponse.Error -> {
+//                        emit(ApiResponse.Error("Error"))
+//                    }
+//                }
+//            }
+//        }.flowOn(Dispatchers.IO)
+        TODO()
+
     }
 
 }

@@ -2,7 +2,7 @@ package com.freisia.vueee.core.utils
 
 import androidx.paging.PositionalDataSource
 
-class CustomDataSource<T> (var data: List<T>) : PositionalDataSource<T>() {
+class LocalDataSource<T> (var data: List<T>) : PositionalDataSource<T>() {
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<T>) {
         val totalCount = data.size
         val position = computeInitialLoadPosition(params,totalCount)

@@ -14,7 +14,7 @@ data class MovieResponse (
     @ColumnInfo(name="genres") @SerializedName("genres") val genres : @RawValue ArrayList<GenresResponse>,
     @PrimaryKey @NonNull @ColumnInfo(name="id") @SerializedName("id") val id : Int,
     @ColumnInfo(name="overview") @SerializedName("overview") val overview : String,
-    @ColumnInfo(name="poster_path") @SerializedName("poster_path") val poster_path : String,
+    @ColumnInfo(name="poster_path") @SerializedName("poster_path") val poster_path : String?,
     @ColumnInfo(name="release_date") @SerializedName("release_date") val release_date : String,
     @ColumnInfo(name="runtime") @SerializedName("runtime") val runtime : Int,
     @ColumnInfo(name="title") @SerializedName("title") val title : String,

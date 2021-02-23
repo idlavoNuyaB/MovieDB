@@ -16,7 +16,7 @@ data class TVResponse (
     @PrimaryKey @NonNull @ColumnInfo(name="id") @SerializedName("id") val id : Int,
     @ColumnInfo(name="name") @SerializedName("name") val name : String,
     @ColumnInfo(name="overview") @SerializedName("overview") val overview : String,
-    @ColumnInfo(name="poster_path") @SerializedName("poster_path") val poster_path : String,
+    @ColumnInfo(name="poster_path") @SerializedName("poster_path") val poster_path : String?,
     @ColumnInfo(name="vote_average") @SerializedName("vote_average") val vote_average : Double,
     @ColumnInfo(name="vote_count") @SerializedName("vote_count") val vote_count : Int
 )

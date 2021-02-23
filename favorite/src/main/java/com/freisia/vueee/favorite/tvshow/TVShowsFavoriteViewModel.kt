@@ -7,7 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.freisia.vueee.core.domain.usecase.TVUseCase
 import com.freisia.vueee.core.presentation.model.tv.TV
-import com.freisia.vueee.core.utils.CustomDataSourceFactory
+import com.freisia.vueee.core.utils.LocalDataSourceFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -24,7 +24,7 @@ class TVShowsFavoriteViewModel(private val useCase: TVUseCase) : ViewModel() {
                 .setPageSize(20)
                 .setPrefetchDistance(5)
                 .build()
-            val dataSourceFactory = CustomDataSourceFactory(it)
+            val dataSourceFactory = LocalDataSourceFactory(it)
             data = LivePagedListBuilder(dataSourceFactory,config).build()
 
         }

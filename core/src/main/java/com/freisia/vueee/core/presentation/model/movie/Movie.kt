@@ -10,7 +10,7 @@ data class Movie (
     @SerializedName("genres") val genres : ArrayList<Genres>,
     @SerializedName("id") val id : Int,
     @SerializedName("overview") val overview : String,
-    @SerializedName("poster_path") val poster_path : String,
+    @SerializedName("poster_path") val poster_path : String?,
     @SerializedName("release_date") val release_date : String,
     @SerializedName("runtime") val runtime : Int,
     @SerializedName("title") val title : String,

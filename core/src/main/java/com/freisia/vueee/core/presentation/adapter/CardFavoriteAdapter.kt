@@ -13,6 +13,8 @@ import com.freisia.vueee.core.presentation.model.movie.Movie
 import com.freisia.vueee.core.presentation.model.tv.TV
 import com.freisia.vueee.core.utils.Constant
 import com.freisia.vueee.core.databinding.LayoutItemCardBinding
+import com.freisia.vueee.core.presentation.model.movie.SearchMovie
+import com.freisia.vueee.core.presentation.model.tv.SearchTV
 
 class CardFavoriteAdapter<T> :
     PagedListAdapter<T, CardFavoriteAdapter<T>.CardViewHolder>(
@@ -23,6 +25,12 @@ class CardFavoriteAdapter<T> :
                     check = oldItem.title == newItem.title && oldItem.poster_path ==
                             newItem.poster_path && oldItem.vote_average == newItem.vote_average
                 } else if(oldItem is TV && newItem is TV){
+                    check = oldItem.name == newItem.name && oldItem.poster_path ==
+                            newItem.poster_path && oldItem.vote_average == newItem.vote_average
+                } else if(oldItem is SearchMovie && newItem is SearchMovie){
+                    check = oldItem.title == newItem.title && oldItem.poster_path ==
+                            newItem.poster_path && oldItem.vote_average == newItem.vote_average
+                } else if(oldItem is SearchTV && newItem is SearchTV){
                     check = oldItem.name == newItem.name && oldItem.poster_path ==
                             newItem.poster_path && oldItem.vote_average == newItem.vote_average
                 }
@@ -59,18 +67,35 @@ class CardFavoriteAdapter<T> :
         }
 
         fun bindUser(movie: T?) {
-            if(movie is Movie){
-                val image = Uri.parse(Constant.BASE_IMAGE_URL + movie.poster_path)
-                Glide.with(itemView.context).load(image).error(R.mipmap.ic_launcher_round).into(profilImage)
-                profilTitle.text = movie.title
-                val review = movie.vote_average * 10
-                profilReview.text = itemView.context.getString(R.string.review,review.toString())
-            } else if(movie is TV){
-                val image = Uri.parse(Constant.BASE_IMAGE_URL + movie.poster_path)
-                Glide.with(itemView.context).load(image).error(R.mipmap.ic_launcher_round).into(profilImage)
-                profilTitle.text = movie.name
-                val review = movie.vote_average * 10
-                profilReview.text = itemView.context.getString(R.string.review,review.toString())
+            when (movie) {
+                is Movie -> {
+                    val image = Uri.parse(Constant.BASE_IMAGE_URL + movie.poster_path)
+                    Glide.with(itemView.context).load(image).error(R.mipmap.ic_launcher_round).into(profilImage)
+                    profilTitle.text = movie.title
+                    val review = movie.vote_average * 10
+                    profilReview.text = itemView.context.getString(R.string.review,review.toString())
+                }
+                is TV -> {
+                    val image = Uri.parse(Constant.BASE_IMAGE_URL + movie.poster_path)
+                    Glide.with(itemView.context).load(image).error(R.mipmap.ic_launcher_round).into(profilImage)
+                    profilTitle.text = movie.name
+                    val review = movie.vote_average * 10
+                    profilReview.text = itemView.context.getString(R.string.review,review.toString())
+                }
+                is SearchMovie -> {
+                    val image = Uri.parse(Constant.BASE_IMAGE_URL + movie.poster_path)
+                    Glide.with(itemView.context).load(image).error(R.mipmap.ic_launcher_round).into(profilImage)
+                    profilTitle.text = movie.title
+                    val review = movie.vote_average * 10
+                    profilReview.text = itemView.context.getString(R.string.review,review.toString())
+                }
+                is SearchTV -> {
+                    val image = Uri.parse(Constant.BASE_IMAGE_URL + movie.poster_path)
+                    Glide.with(itemView.context).load(image).error(R.mipmap.ic_launcher_round).into(profilImage)
+                    profilTitle.text = movie.name
+                    val review = movie.vote_average * 10
+                    profilReview.text = itemView.context.getString(R.string.review,review.toString())
+                }
             }
         }
     }

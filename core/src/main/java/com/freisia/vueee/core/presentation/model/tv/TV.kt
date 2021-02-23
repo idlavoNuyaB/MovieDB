@@ -13,7 +13,7 @@ data class TV (
     @SerializedName("id") val id : Int,
     @SerializedName("name") val name : String,
     @SerializedName("overview") val overview : String,
-    @SerializedName("poster_path") val poster_path : String,
+    @SerializedName("poster_path") val poster_path : String?,
     @SerializedName("vote_average") val vote_average : Double,
     @SerializedName("vote_count") val vote_count : Int
 ) : Parcelable

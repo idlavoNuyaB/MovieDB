@@ -21,6 +21,7 @@
         <item>Top Rated</item>
     </string-array>
     <string-array name="spinnerTV">
+        <item>NONE</item>
         <item>Popular</item>
         <item>On Air</item>
         <item>Top Rated</item>

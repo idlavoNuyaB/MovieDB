@@ -1,9 +1,14 @@
 package com.freisia.vueee.core.data.remote.source
 
+import androidx.paging.DataSource
+import androidx.paging.PageKeyedDataSource
 import com.freisia.vueee.core.data.model.movie.MovieResponse
 import com.freisia.vueee.core.data.model.movie.ResultMovieResponse
+import com.freisia.vueee.core.data.model.movie.SearchMovieResponse
 import com.freisia.vueee.core.data.remote.APIService
 import com.freisia.vueee.core.data.remote.ApiResponse
+import com.freisia.vueee.core.utils.RemoteDataSourceFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -26,18 +31,9 @@ class MovieRemoteDataSource(private val apiService: APIService){
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getList(page: Int) : Flow<ApiResponse<ResultMovieResponse>> {
+    suspend fun getList(state : Flow<ApiResponse<SearchMovieResponse>>) : Flow<RemoteDataSourceFactory<SearchMovieResponse>> {
         return flow {
-            try {
-                val api = apiService.getMovies(page)
-                if(api.isSuccessful){
-                    emit(ApiResponse.Success(api.body() as ResultMovieResponse))
-                } else{
-                    emit(ApiResponse.Empty)
-                }
-            } catch(e : Exception){
-                emit(ApiResponse.Error(e.toString()))
-            }
+            emit(RemoteDataSourceFactory(apiService, CoroutineScope(Dispatchers.IO),state))
         }.flowOn(Dispatchers.IO)
     }
 

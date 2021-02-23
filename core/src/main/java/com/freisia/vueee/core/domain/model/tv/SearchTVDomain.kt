@@ -6,5 +6,5 @@ data class SearchTVDomain (
     @SerializedName("name") val name : String,
     @SerializedName("id") val id : Int,
     @SerializedName("vote_average") val vote_average : Double,
-    @SerializedName("poster_path") val poster_path : String
+    @SerializedName("poster_path") val poster_path : String?
 )
