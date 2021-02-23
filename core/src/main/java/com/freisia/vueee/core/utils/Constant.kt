@@ -11,8 +11,6 @@ class Constant {
         const val GET_MOVIE_DETAIL = "/3/movie/{movie_id}"
         const val GET_TV_DETAIL = "/3/tv/{tv_id}"
         const val GET_TV_RATING = "3/tv/{tv_id}/content_ratings"
-        const val SEARCH_MOVIE = "/3/search/movie"
-        const val SEARCH_TV = "/3/search/tv"
         const val RELEASE = "releases"
         const val LANGUAGE = "en-us"
         const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"

@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar
 import com.freisia.vueee.R
 import com.freisia.vueee.databinding.ActivityListBinding
 import com.freisia.vueee.presentation.adapter.SectionPagerAdapter
-import java.util.*
 
 class ListActivity : AppCompatActivity() {
 
@@ -38,12 +37,6 @@ class ListActivity : AppCompatActivity() {
         toolbar.setContentInsetsAbsolute(0, 0)
         toolbar.contentInsetEnd
         toolbar.setPadding(0, 0, 0, 0)
-        val view = toolbar.getChildAt(0)
-        view.setOnClickListener {
-            val intent = Intent(this@ListActivity,ListActivity::class.java)
-            finish()
-            startActivity(intent)
-        }
     }
 
     private fun initTabLayout(){

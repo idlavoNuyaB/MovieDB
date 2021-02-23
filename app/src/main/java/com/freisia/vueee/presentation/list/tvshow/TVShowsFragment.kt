@@ -42,7 +42,7 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
     private var check = 1
     private var temp = 0
     private var checkSpinner = 1
-    private var isFound = false
+    private var isFound = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -225,20 +225,16 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
             if(it){
                 binding.loadings.visibility = View.VISIBLE
                 binding.list2.visibility = View.GONE
+                binding.nfs.visibility = View.GONE
             } else {
                 binding.loadings.visibility = View.GONE
-                binding.list2.visibility = View.VISIBLE
             }
         }
     }
 
     private fun observeFound() : Observer<Boolean> {
         return Observer {
-            isFound = if(!it){
-                !it
-            } else{
-                it
-            }
+            isFound = it
         }
     }
 

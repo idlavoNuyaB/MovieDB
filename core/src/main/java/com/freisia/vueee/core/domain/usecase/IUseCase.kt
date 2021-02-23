@@ -7,7 +7,6 @@ interface IUseCase<T,Z> {
     suspend fun getPopularRemoteData(page: Int): Flow<T>
     suspend fun getNowPlayingRemoteData(page: Int): Flow<T>
     suspend fun getTopRatedRemoteData(page: Int): Flow<T>
-    suspend fun getSearchRemoteData(page: Int, query: String): Flow<T>
     suspend fun getDetailRemoteData(id :Int): Flow<ApiResponse<Z>>
     fun getFavoriteLocalData(): Flow<List<Z>>
     fun getListDetailLocalData(): Flow<List<Z>>

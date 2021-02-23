@@ -46,7 +46,7 @@ class MoviesFavoriteFragment : Fragment() {
         getJob?.cancel()
         getJob = CoroutineScope(Dispatchers.IO).launch{
             favoriteViewModel.getData()
-            delay(1200)
+            delay(2000)
             withContext(Dispatchers.Main){
                 favoriteViewModel.data.observe(viewLifecycleOwner,observer)
             }

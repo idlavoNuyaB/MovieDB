@@ -152,8 +152,8 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
     private fun localMovie(type: String){
         val detailViewModel:DetailViewModel<MovieUseCase, Movie> by viewModel{parametersOf(type)}
         val movies = intent.getParcelableExtra(EXTRA_DETAIL) as Movie
-        detailViewModel.isLoading.observe(this,observeLoading())
-        detailViewModel.isFound.observe(this,observeFound())
+        detailViewModel.isLoading.observeForever(observeLoading())
+        detailViewModel.isFound.observeForever(observeFound())
         if(isFound){
             val collapsingToolbar  = binding.main
             val appBarLayout = binding.appbar
@@ -213,8 +213,8 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
             detailViewModel.getData(movie.id)
         }
-        detailViewModel.isLoading.observe(this,observeLoading())
-        detailViewModel.isFound.observe(this,observeFound())
+        detailViewModel.isLoading.observeForever(observeLoading())
+        detailViewModel.isFound.observeForever(observeFound())
         if(isFound){
             val collapsingToolbar = binding.main
             val appBarLayout = binding.appbar
@@ -441,7 +441,7 @@ class DetailActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
     }
 
     private fun observeLocalDataMovie(id: Int,
-                                   detailViewModel: DetailViewModel<MovieUseCase, Movie>
+                                      detailViewModel: DetailViewModel<MovieUseCase, Movie>
     ) : Observer<List<Movie>> {
         return Observer { data ->
             checkDataMovie(data, id, detailViewModel)

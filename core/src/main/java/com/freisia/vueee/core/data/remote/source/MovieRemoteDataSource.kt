@@ -71,18 +71,5 @@ class MovieRemoteDataSource(private val apiService: APIService){
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getSearchList(page: Int, query: String) : Flow<ApiResponse<ResultMovieResponse>> {
-        return flow{
-            try{
-                val api = apiService.getSearchMovies(page, query)
-                if(api.isSuccessful){
-                    emit(ApiResponse.Success(api.body() as ResultMovieResponse))
-                } else{
-                    emit(ApiResponse.Empty)
-                }
-            } catch(e : Exception){
-                emit(ApiResponse.Error(e.toString()))
-            }
-        }.flowOn(Dispatchers.IO)
-    }
+
 }

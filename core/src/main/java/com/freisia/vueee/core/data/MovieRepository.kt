@@ -127,27 +127,4 @@ class MovieRepository(
     override suspend fun deleteAllLocalData(){
         localDataSource.deleteAll()
     }
-
-    override suspend fun getSearchRemoteData(
-        page: Int,
-        query: String
-    ): Flow<ApiResponse<ResultMovieDomain>> {
-        return flow{
-            remoteDataSource.getSearchList(page, query).collect {
-                when(it){
-                    is ApiResponse.Success -> {
-                        val data = it.data
-                        emit(ApiResponse.Success(DataMapper.mapResultMovieResponseToDomain(data)))
-                    }
-                    is ApiResponse.Empty -> {
-                        emit( ApiResponse.Empty )
-                    }
-                    is ApiResponse.Error -> {
-                        emit(ApiResponse.Error("Error"))
-                    }
-                }
-            }
-        }.flowOn(Dispatchers.IO)
-    }
-
 }

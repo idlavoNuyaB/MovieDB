@@ -10,12 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <Spinner
-            android:id="@+id/spinners2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:layout_gravity="end"/>
+            android:weightSum="6"
+            android:orientation="horizontal">
+
+            <View
+                style="@style/SearchEditText"
+                android:layout_margin="10dp" />
+            <Spinner
+                android:id="@+id/spinners2"
+                android:background="@drawable/spinner_rounded"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="3"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,11 +60,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <Spinner
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:layout_gravity="end"/>
+                    android:weightSum="6"
+                    android:orientation="horizontal">
+
+                    <View
+                        style="@style/SearchEditText"
+                        android:layout_margin="10dp" />
+                    <Spinner
+                        android:background="@drawable/spinner_rounded"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="3"
+                        android:layout_margin="10dp"/>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

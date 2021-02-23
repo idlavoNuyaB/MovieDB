@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.viewpager.widget.ViewPager
 import com.freisia.vueee.favorite.adapter.SectionPagerFavoriteAdapter
 import com.freisia.vueee.favorite.databinding.ActivityFavoriteBinding
 import com.freisia.vueee.favorite.di.favoriteModule
@@ -42,12 +41,6 @@ class FavoriteActivity : AppCompatActivity() {
         toolbar.setContentInsetsAbsolute(0, 0)
         toolbar.contentInsetEnd
         toolbar.setPadding(0, 0, 0, 0)
-        val view = toolbar.getChildAt(0)
-        view.setOnClickListener {
-            val intent = Intent(this, ListActivity::class.java)
-            finish()
-            startActivity(intent)
-        }
     }
 
     private fun initTabLayout(){
