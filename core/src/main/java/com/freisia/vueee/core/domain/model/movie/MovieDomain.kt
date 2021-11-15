@@ -1,8 +1,11 @@
 package com.freisia.vueee.core.domain.model.movie
 
+import android.os.Parcelable
 import com.freisia.vueee.core.domain.model.all.GenresDomain
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class MovieDomain (
     @SerializedName("genres") val genres : ArrayList<GenresDomain>,
     @SerializedName("id") val id : Int,
@@ -14,4 +17,4 @@ data class MovieDomain (
     @SerializedName("vote_average") val vote_average : Double,
     @SerializedName("vote_count") val vote_count : Int,
     @SerializedName("releases") val releases : ReleasesDomain
-)
+) : Parcelable

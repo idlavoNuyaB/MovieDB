@@ -14,19 +14,18 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ref.WeakReference
 
-class DetailViewModel <T,Z>(private val usecase: T, private val weakContext: WeakReference<Context>) : ViewModel(){
+class DetailViewModel <T,Z>(private val usecase: T, private val context: Context) : ViewModel(){
     var listData = MutableLiveData<Z>()
     var isLoading = MutableLiveData<Boolean>()
+    var isFound = MutableLiveData<Boolean>()
     var rate = MutableLiveData<String>()
     val localData : LiveData<List<Z>>?
-    var isFound = MutableLiveData<Boolean>()
 
     init{
         localData = getLocalData()
-        isLoading.value = false
-        isFound.value = false
+        isLoading.value =false
+        isFound.value = true
     }
 
     @JvmName("getLocalData1")
@@ -97,9 +96,8 @@ class DetailViewModel <T,Z>(private val usecase: T, private val weakContext: Wea
 
                                         }
                                         else -> {
-                                            val context = weakContext.get()
-                                            rate.value = context?.resources
-                                                ?.getString(R.string.notfoundrating)
+                                            rate.value = context.resources
+                                                        .getString(R.string.notfoundrating)
                                         }
                                     }
                                 }
@@ -118,8 +116,8 @@ class DetailViewModel <T,Z>(private val usecase: T, private val weakContext: Wea
             }
         } catch (e: Exception){
             withContext(Dispatchers.Main){
-                isLoading.value = false
                 isFound.value = false
+                isLoading.value = false
             }
         }
     }

@@ -33,6 +33,8 @@ object DataMapper {
 
     fun mapResultTVResponseToDomain(input: ResultTVResponse) : ResultTVDomain {
         return ResultTVDomain(
+            page = input.page,
+            totalResult = input.totalResult,
             totalPages = input.totalPages,
             result = mapSearchTVResponseToDomain(input.result)
        )
@@ -73,6 +75,8 @@ object DataMapper {
 
     fun mapResultTVDomainToPresentation(input: ResultTVDomain) : ResultTV {
         return ResultTV(
+            page = input.page,
+            totalResult = input.totalResult,
             totalPages = input.totalPages,
             result = mapSearchTVDomainToPresentation(input.result)
         )
@@ -188,6 +192,8 @@ object DataMapper {
 
     fun mapResultMovieResponseToDomain(input: ResultMovieResponse) : ResultMovieDomain {
         return ResultMovieDomain(
+            page = input.page,
+            totalResult = input.totalResult,
             totalPages = input.totalPages,
             result = mapSearchMovieResponseToDomain(input.result)
         )
@@ -210,6 +216,8 @@ object DataMapper {
 
     fun mapResultMovieDomainToPresentation(input: ResultMovieDomain) : ResultMovie {
         return ResultMovie(
+            page = input.page,
+            totalResult = input.totalResult,
             totalPages = input.totalPages,
             result = mapSearchMovieDomainToPresentation(input.result)
         )
@@ -288,7 +296,9 @@ object DataMapper {
         input.map{
             val data = CountriesDomain(
                 certification = it.certification,
-                iso_3166_1 = it.iso_3166_1
+                iso_3166_1 = it.iso_3166_1,
+                primary = it.primary,
+                release_date = it.release_date
             )
             listData.add(data)
         }
@@ -353,7 +363,9 @@ object DataMapper {
         input.map{
             val data = Countries(
                 certification = it.certification,
-                iso_3166_1 = it.iso_3166_1
+                iso_3166_1 = it.iso_3166_1,
+                primary = it.primary,
+                release_date = it.release_date
             )
             listData.add(data)
         }
@@ -398,7 +410,9 @@ object DataMapper {
         input.map{
             val data = CountriesResponse(
                 certification = it.certification,
-                iso_3166_1 = it.iso_3166_1
+                iso_3166_1 = it.iso_3166_1,
+                primary = it.primary,
+                release_date = it.release_date
             )
             listData.add(data)
         }
@@ -443,7 +457,9 @@ object DataMapper {
         input.map{
             val data = CountriesDomain(
                 certification = it.certification,
-                iso_3166_1 = it.iso_3166_1
+                iso_3166_1 = it.iso_3166_1,
+                primary = it.primary,
+                release_date = it.release_date
             )
             listData.add(data)
         }

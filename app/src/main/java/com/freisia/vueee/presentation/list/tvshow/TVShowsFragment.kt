@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.freisia.vueee.R
 import com.freisia.vueee.core.presentation.adapter.CardAdapter
 import com.freisia.vueee.core.presentation.model.tv.SearchTV
+import com.freisia.vueee.core.utils.EspressoIdlingResource
 import com.freisia.vueee.databinding.TvshowsFragmentBinding
 import com.freisia.vueee.presentation.detail.DetailActivity
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,6 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
     private var check = 1
     private var temp = 0
     private var checkSpinner = 1
-    private var isFound = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,35 +54,28 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EspressoIdlingResource.increment()
         this.retainInstance = true
         if(binding.nfs.visibility == View.VISIBLE) binding.nfs.visibility = View.GONE
         if(binding.list2.visibility == View.VISIBLE) binding.list2.visibility = View.GONE
         binding.loadings.visibility = View.VISIBLE
-        coroutineJob?.cancel()
-        viewModel.reset()
-        coroutineJob = CoroutineScope(Dispatchers.IO).launch {
-            viewModel.getData()
-        }
-        viewModel.isLoading.observe(this.viewLifecycleOwner,observeLoading())
-        viewModel.isFound.observe(this.viewLifecycleOwner,observeFound())
-        viewModel.listData.observe(this.viewLifecycleOwner,observeData())
+        binding.whiteViews.visibility = View.VISIBLE
         spinnerCheck()
+        viewModel.isLoading.observeForever(observeLoading())
+        viewModel.isFound.observeForever(observeFound())
         cardGridRecyclerView()
+        if(!EspressoIdlingResource.getEspressoIdlingResourceForMainActivity().isIdleNow){
+            EspressoIdlingResource.decrement()
+        }
     }
 
     override fun onPause() {
         coroutineJob?.cancel()
-        viewModel.isFound.removeObserver(observeFound())
-        viewModel.isLoading.removeObserver(observeLoading())
-        viewModel.listData.removeObserver(observeData())
         super.onPause()
     }
 
     override fun onDestroy() {
         coroutineJob?.cancel()
-        viewModel.isFound.removeObserver(observeFound())
-        viewModel.isLoading.removeObserver(observeLoading())
-        viewModel.listData.removeObserver(observeData())
         super.onDestroy()
     }
 
@@ -121,6 +114,7 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                 position: Int,
                 id: Long
             ) {
+                EspressoIdlingResource.increment()
                 when(position){
                     0 -> {
                         if(!detail.isNullOrEmpty()){
@@ -131,11 +125,13 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                         viewModel.reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getData()
+                            if(!EspressoIdlingResource.getEspressoIdlingResourceForMainActivity().isIdleNow){
+                                EspressoIdlingResource.decrement()
+                            }
                         }
                         checkSpinner = 1
-                        viewModel.isLoading.observe(requireActivity(),observeLoading())
-                        viewModel.isFound.observe(requireActivity(),observeFound())
-                        viewModel.listData.observe(requireActivity(),observeData())
+                        viewModel.isLoading.observeForever(observeLoading())
+                        viewModel.isFound.observeForever(observeFound())
                     }
                     1 -> {
                         if(!detail.isNullOrEmpty()) {
@@ -146,11 +142,13 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                         viewModel.reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getOnAirData()
+                            if(!EspressoIdlingResource.getEspressoIdlingResourceForMainActivity().isIdleNow){
+                                EspressoIdlingResource.decrement()
+                            }
                         }
                         checkSpinner = 2
-                        viewModel.isLoading.observe(requireActivity(),observeLoading())
-                        viewModel.isFound.observe(requireActivity(),observeFound())
-                        viewModel.listData.observe(requireActivity(),observeData())
+                        viewModel.isLoading.observeForever(observeLoading())
+                        viewModel.isFound.observeForever(observeFound())
                     }
                     2 -> {
                         if(!detail.isNullOrEmpty()) {
@@ -161,11 +159,13 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
                         viewModel.reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getTopRated()
+                            if(!EspressoIdlingResource.getEspressoIdlingResourceForMainActivity().isIdleNow){
+                                EspressoIdlingResource.decrement()
+                            }
                         }
                         checkSpinner = 3
-                        viewModel.isLoading.observe(requireActivity(),observeLoading())
-                        viewModel.isFound.observe(requireActivity(),observeFound())
-                        viewModel.listData.observe(requireActivity(),observeData())
+                        viewModel.isLoading.observeForever(observeLoading())
+                        viewModel.isFound.observeForever(observeFound())
                     }
                 }
             }
@@ -204,6 +204,7 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
             binding.list2.visibility = View.GONE
         }
         binding.loadings.visibility = View.GONE
+        binding.whiteViews.visibility = View.GONE
         binding.nfs.visibility = View.VISIBLE
     }
 
@@ -212,6 +213,7 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
             binding.nfs.visibility = View.GONE
         }
         binding.loadings.visibility = View.GONE
+        binding.whiteViews.visibility = View.GONE
         binding.list2.visibility = View.VISIBLE
     }
 
@@ -220,37 +222,37 @@ class TVShowsFragment: Fragment(), CardAdapter.OnLoadMoreListener {
         cardAdapter.setData(detail)
     }
 
-    private fun observeLoading() : Observer<Boolean> {
+    private fun observeFound() : Observer<Boolean> {
         return Observer {
             if(it){
-                binding.loadings.visibility = View.VISIBLE
-                binding.list2.visibility = View.GONE
-                binding.nfs.visibility = View.GONE
+                viewModel.listData.observeForever(observeData())
             } else {
-                binding.loadings.visibility = View.GONE
+                notFound()
             }
         }
     }
 
-    private fun observeFound() : Observer<Boolean> {
-        return Observer {
-            isFound = it
+    private fun observeData() : Observer<List<SearchTV>> {
+        return Observer{
+            temp++
+            if(check == temp){
+                detail.addAll(it as ArrayList<SearchTV>)
+                found()
+                getData()
+            } else {
+                temp = check
+            }
         }
     }
 
-    private fun observeData() : Observer<List<SearchTV>>{
-        return Observer{
-            if(isFound){
-                temp++
-                if(check == temp){
-                    detail.addAll(it as ArrayList<SearchTV>)
-                    found()
-                    getData()
-                } else {
-                    temp = check
-                }
+    private fun observeLoading() : Observer<Boolean> {
+        return Observer {
+            if(it){
+                binding.loadings.visibility = View.VISIBLE
+                binding.whiteViews.visibility = View.VISIBLE
             } else {
-                notFound()
+                binding.loadings.visibility = View.GONE
+                binding.whiteViews.visibility = View.GONE
             }
         }
     }

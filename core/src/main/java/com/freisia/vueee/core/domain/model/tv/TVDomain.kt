@@ -1,8 +1,11 @@
 package com.freisia.vueee.core.domain.model.tv
 
+import android.os.Parcelable
 import com.freisia.vueee.core.domain.model.all.GenresDomain
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class TVDomain (
     @SerializedName("episode_run_time") val episode_run_time : ArrayList<Int>,
     @SerializedName("first_air_date") val first_air_date : String,
@@ -13,4 +16,4 @@ data class TVDomain (
     @SerializedName("poster_path") val poster_path : String,
     @SerializedName("vote_average") val vote_average : Double,
     @SerializedName("vote_count") val vote_count : Int
-)
+) : Parcelable

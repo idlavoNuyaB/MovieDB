@@ -5,7 +5,5 @@
     <color name="colorAccent">#FF2D19</color>
     <color name="pureBlack">#EE000000</color>
     <color name="pureWhite">#FFFFFFFF</color>
-    <color name="shadow">#DDDDDD</color>
-    <color name="shadowTitle">#7F000000</color>
-    <color name="transparent">#00000000</color>
+    <color name="shadow">#AA667766</color>
 </resources>

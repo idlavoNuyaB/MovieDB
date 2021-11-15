@@ -1,6 +1,6 @@
 package com.freisia.vueee.core.utils
 
-import com.freisia.vueee.core.BuildConfig
+import com.freisia.vueee.BuildConfig
 
 class Constant {
     companion object{
@@ -18,6 +18,5 @@ class Constant {
         const val GET_TOP_RATED_MOVIE = "/3/movie/top_rated"
         const val GET_ON_AIR_TV = "/3/tv/on_the_air"
         const val GET_TOP_RATED_TV = "3/tv/top_rated"
-        const val GET_PASSPHRASE = "177013"
     }
 }

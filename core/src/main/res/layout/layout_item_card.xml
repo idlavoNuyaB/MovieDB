@@ -38,7 +38,7 @@
             android:background="@color/pureWhite"
             android:gravity="start"
             android:text="@string/title"
-            android:textSize="13sp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

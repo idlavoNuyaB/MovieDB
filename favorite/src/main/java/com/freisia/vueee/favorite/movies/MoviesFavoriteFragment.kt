@@ -39,14 +39,13 @@ class MoviesFavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.list3.visibility = View.GONE
         setHasOptionsMenu(true)
         this.retainInstance = true
         reload()
         getJob?.cancel()
         getJob = CoroutineScope(Dispatchers.IO).launch{
             favoriteViewModel.getData()
-            delay(2000)
+            delay(1000)
             withContext(Dispatchers.Main){
                 favoriteViewModel.data.observe(viewLifecycleOwner,observer)
             }
@@ -77,7 +76,7 @@ class MoviesFavoriteFragment : Fragment() {
                     reload()
                     getJob = CoroutineScope(Dispatchers.IO).launch{
                         favoriteViewModel.getData()
-                        delay(1200)
+                        delay(1000)
                         withContext(Dispatchers.Main){
                             favoriteViewModel.data.observe(viewLifecycleOwner,observer)
                         }
@@ -111,27 +110,20 @@ class MoviesFavoriteFragment : Fragment() {
     }
 
     private val observer = Observer<PagedList<Movie>>{
-        if(it.isNotEmpty()){
+        if(it != null){
             cardAdapter.submitList(it)
             found()
-        } else{
-            notFound()
         }
-    }
-
-    private fun notFound(){
-        binding.loadings.visibility = View.GONE
-        binding.viewEmpty.root.visibility = View.VISIBLE
     }
 
     private fun found(){
         binding.loadings.visibility = View.GONE
-        binding.list3.visibility = View.VISIBLE
+        binding.whiteViews.visibility = View.GONE
     }
 
     private fun reload(){
         binding.loadings.visibility = View.VISIBLE
-        binding.list3.visibility = View.GONE
+        binding.whiteViews.visibility = View.VISIBLE
     }
 
 }

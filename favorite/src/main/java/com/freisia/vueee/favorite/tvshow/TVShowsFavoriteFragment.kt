@@ -38,14 +38,13 @@ class TVShowsFavoriteFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.list4.visibility = View.GONE
         setHasOptionsMenu(true)
         this.retainInstance = true
         reload()
         getJob?.cancel()
         getJob = CoroutineScope(Dispatchers.IO).launch{
             viewModel.getData()
-            delay(2000)
+            delay(1000)
             withContext(Dispatchers.Main){
                 viewModel.data.observe(viewLifecycleOwner,observer)
             }
@@ -76,7 +75,7 @@ class TVShowsFavoriteFragment: Fragment() {
                     reload()
                     getJob = CoroutineScope(Dispatchers.IO).launch{
                         viewModel.getData()
-                        delay(1200)
+                        delay(1000)
                         withContext(Dispatchers.Main){
                             viewModel.data.observe(viewLifecycleOwner,observer)
                         }
@@ -110,28 +109,20 @@ class TVShowsFavoriteFragment: Fragment() {
     }
 
     private val observer = Observer<PagedList<TV>>{
-        if(it.isNotEmpty()){
+        if(it != null){
             cardAdapter.submitList(it)
             found()
-        } else{
-            notFound()
         }
-    }
-
-    private fun notFound(){
-        binding.loadings.visibility = View.GONE
-        binding.viewEmpty.root.visibility = View.VISIBLE
     }
 
     private fun found(){
         binding.loadings.visibility = View.GONE
-        binding.list4.visibility = View.VISIBLE
+        binding.whiteViews.visibility = View.GONE
     }
 
     private fun reload(){
         binding.loadings.visibility = View.VISIBLE
-        binding.list4.visibility = View.GONE
-        binding.viewEmpty.root.visibility = View.GONE
+        binding.whiteViews.visibility = View.VISIBLE
     }
 
 }

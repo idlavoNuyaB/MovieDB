@@ -5,7 +5,10 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -19,7 +22,10 @@ import com.freisia.vueee.core.presentation.adapter.CardAdapter
 import com.freisia.vueee.core.presentation.model.movie.SearchMovie
 import com.freisia.vueee.databinding.MoviesFragmentBinding
 import com.freisia.vueee.presentation.detail.DetailActivity
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
@@ -36,16 +42,15 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
     private var check = 1
     private var temp = 0
     private var checkSpinner = 1
-    private var isFound = false
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = MoviesFragmentBinding.inflate(inflater, container, false)
+        binding = MoviesFragmentBinding.inflate(inflater,container,false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,37 +58,16 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         if(binding.nfs.visibility == View.VISIBLE) binding.nfs.visibility = View.GONE
         if(binding.list.visibility == View.VISIBLE) binding.list.visibility = View.GONE
         binding.loadings.visibility = View.VISIBLE
-        coroutineJob?.cancel()
-        viewModel.reset()
-        coroutineJob = CoroutineScope(Dispatchers.IO).launch {
-            viewModel.getData()
-        }
-        data()
+        binding.whiteViews.visibility = View.VISIBLE
         spinnerCheck()
+        viewModel.isLoading.observeForever(observeLoading())
+        viewModel.isFound.observeForever(observeFound())
         cardGridRecyclerView()
     }
 
-
-    private fun reset(){
-        if (!detail.isNullOrEmpty()) {
-            cardAdapter.resetData()
-            detail = ArrayList()
-        }
-        coroutineJob?.cancel()
-        viewModel.reset()
-    }
-
-    private fun data(){
-        viewModel.isLoading.observe(this.viewLifecycleOwner, observeLoading())
-        viewModel.isFound.observe(this.viewLifecycleOwner, observeFound())
-        viewModel.listData.observe(this.viewLifecycleOwner, observeData())
-    }
-
     private fun spinnerCheck(){
-        val adapters = object : ArrayAdapter<String>(
-            this.requireContext(), android.R.layout.simple_spinner_item,
-            resources.getStringArray(R.array.spinner)
-        ){
+        val adapters = object : ArrayAdapter<String>(this.requireContext(),android.R.layout.simple_spinner_item,
+            resources.getStringArray(R.array.spinner)){
             override fun getDropDownView(
                 position: Int,
                 convertView: View?,
@@ -118,28 +102,46 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
             ) {
                 when(position){
                     0 -> {
-                        reset()
+                        if(!detail.isNullOrEmpty()){
+                            cardAdapter.resetData()
+                            detail = ArrayList()
+                        }
+                        coroutineJob?.cancel()
+                        viewModel.reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getData()
                         }
                         checkSpinner = 1
-                        data()
+                        viewModel.isLoading.observeForever(observeLoading())
+                        viewModel.isFound.observeForever(observeFound())
                     }
                     1 -> {
-                        reset()
+                        if(!detail.isNullOrEmpty()) {
+                            cardAdapter.resetData()
+                            detail = ArrayList()
+                        }
+                        coroutineJob?.cancel()
+                        viewModel.reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getNowPlaying()
                         }
                         checkSpinner = 2
-                        data()
+                        viewModel.isLoading.observeForever(observeLoading())
+                        viewModel.isFound.observeForever(observeFound())
                     }
                     2 -> {
-                        reset()
+                        if(!detail.isNullOrEmpty()) {
+                            cardAdapter.resetData()
+                            detail = ArrayList()
+                        }
+                        coroutineJob?.cancel()
+                        viewModel.reset()
                         coroutineJob = CoroutineScope(Dispatchers.IO).launch {
                             viewModel.getTopRated()
                         }
                         checkSpinner = 3
-                        data()
+                        viewModel.isLoading.observeForever(observeLoading())
+                        viewModel.isFound.observeForever(observeFound())
                     }
                 }
             }
@@ -147,6 +149,7 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
+
         }
     }
 
@@ -168,12 +171,12 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
 
     private fun cardGridRecyclerView(){
         binding.list.itemAnimator = DefaultItemAnimator()
-        binding.list.layoutManager = GridLayoutManager(this.requireActivity(), 2)
+        binding.list.layoutManager = GridLayoutManager(this.requireActivity(),2)
         cardAdapter = CardAdapter(detail, binding.list)
         cardAdapter.onItemClick = {
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra(DetailActivity.EXTRA_DETAIL, it)
-            intent.putExtra(DetailActivity.TYPE_DETAIL, data)
+            intent.putExtra(DetailActivity.TYPE_DETAIL,data)
             intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             startActivity(intent)
         }
@@ -194,6 +197,7 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
             binding.list.visibility = View.GONE
         }
         binding.loadings.visibility = View.GONE
+        binding.whiteViews.visibility = View.GONE
         binding.nfs.visibility = View.VISIBLE
     }
 
@@ -202,6 +206,7 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
             binding.nfs.visibility = View.GONE
         }
         binding.loadings.visibility = View.GONE
+        binding.whiteViews.visibility = View.GONE
         binding.list.visibility = View.VISIBLE
     }
 
@@ -210,38 +215,37 @@ class MoviesFragment : Fragment(), CardAdapter.OnLoadMoreListener {
         cardAdapter.setData(detail)
     }
 
-    private fun observeLoading() : Observer<Boolean>{
+    private fun observeFound() : Observer<Boolean>{
         return Observer {
             if(it){
-                binding.loadings.visibility = View.VISIBLE
-                binding.list.visibility = View.GONE
-                binding.nfs.visibility = View.GONE
-
+                viewModel.listData.observeForever(observeData())
             } else {
-                binding.loadings.visibility = View.GONE
+                notFound()
             }
-        }
-    }
-
-    private fun observeFound() : Observer<Boolean> {
-        return Observer {
-            isFound = it
         }
     }
 
     private fun observeData() : Observer<List<SearchMovie>>{
         return Observer{
-            if(isFound){
-                temp++
-                if(check == temp){
-                    detail.addAll(it as ArrayList<SearchMovie>)
-                    found()
-                    getData()
-                } else {
-                    temp = check
-                }
+            temp++
+            if(check == temp){
+                detail.addAll(it as ArrayList<SearchMovie>)
+                found()
+                getData()
             } else {
-                notFound()
+                temp = check
+            }
+        }
+    }
+
+    private fun observeLoading() : Observer<Boolean>{
+        return Observer {
+            if(it){
+                binding.loadings.visibility = View.VISIBLE
+                binding.whiteViews.visibility = View.VISIBLE
+            } else {
+                binding.loadings.visibility = View.GONE
+                binding.whiteViews.visibility = View.GONE
             }
         }
     }

@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.viewpager.widget.ViewPager
+import com.freisia.vueee.core.utils.EspressoIdlingResource
 import com.freisia.vueee.favorite.adapter.SectionPagerFavoriteAdapter
 import com.freisia.vueee.favorite.databinding.ActivityFavoriteBinding
 import com.freisia.vueee.favorite.di.favoriteModule
@@ -41,6 +43,12 @@ class FavoriteActivity : AppCompatActivity() {
         toolbar.setContentInsetsAbsolute(0, 0)
         toolbar.contentInsetEnd
         toolbar.setPadding(0, 0, 0, 0)
+        val view = toolbar.getChildAt(0)
+        view.setOnClickListener {
+            val intent = Intent(this, ListActivity::class.java)
+            finish()
+            startActivity(intent)
+        }
     }
 
     private fun initTabLayout(){
@@ -49,6 +57,19 @@ class FavoriteActivity : AppCompatActivity() {
             supportFragmentManager
         )
         binding.viewPagers.adapter = sectionPagerAdapter
+        binding.viewPagers.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    EspressoIdlingResource.increment()
+                } else if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    if (!EspressoIdlingResource.getEspressoIdlingResourceForMainActivity().isIdleNow) {
+                        EspressoIdlingResource.decrement()
+                    }
+                }
+                super.onPageScrollStateChanged(state)
+            }
+        })
         binding.tabs.setupWithViewPager(binding.viewPagers)
     }
 }

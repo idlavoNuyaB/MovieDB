@@ -1,5 +1,6 @@
 package com.freisia.vueee.core.data.model.movie
 
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,9 +8,11 @@ import androidx.room.PrimaryKey
 import com.freisia.vueee.core.data.model.all.GenresResponse
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Entity(tableName = "Movie")
+@Parcelize
 data class MovieResponse (
     @ColumnInfo(name="genres") @SerializedName("genres") val genres : @RawValue ArrayList<GenresResponse>,
     @PrimaryKey @NonNull @ColumnInfo(name="id") @SerializedName("id") val id : Int,
@@ -21,4 +24,4 @@ data class MovieResponse (
     @ColumnInfo(name="vote_average") @SerializedName("vote_average") val vote_average : Double,
     @ColumnInfo(name="vote_count") @SerializedName("vote_count") val vote_count : Int,
     @ColumnInfo(name="releases") @SerializedName("releases") val releases : @RawValue ReleasesResponse
-)
+) : Parcelable

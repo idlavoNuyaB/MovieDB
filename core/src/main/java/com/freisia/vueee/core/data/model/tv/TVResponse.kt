@@ -1,13 +1,16 @@
 package com.freisia.vueee.core.data.model.tv
 
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.freisia.vueee.core.data.model.all.GenresResponse
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Parcelize
 @Entity(tableName = "TV")
 data class TVResponse (
     @ColumnInfo(name="episode_run_time") @SerializedName("episode_run_time") val episode_run_time : ArrayList<Int>,
@@ -19,4 +22,4 @@ data class TVResponse (
     @ColumnInfo(name="poster_path") @SerializedName("poster_path") val poster_path : String,
     @ColumnInfo(name="vote_average") @SerializedName("vote_average") val vote_average : Double,
     @ColumnInfo(name="vote_count") @SerializedName("vote_count") val vote_count : Int
-)
+) : Parcelable

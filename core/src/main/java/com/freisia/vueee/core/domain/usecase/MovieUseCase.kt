@@ -122,5 +122,4 @@ class MovieUseCase(private val repository: MovieRepository) :
     override suspend fun deleteAllLocalData() {
         repository.deleteAllLocalData()
     }
-
 }

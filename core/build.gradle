@@ -24,11 +24,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug{
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -48,26 +44,16 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
-    //okhttp3
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
-    //coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
-    //room
     implementation 'androidx.room:room-runtime:2.2.6'
     implementation 'androidx.room:room-ktx:2.2.6'
-    kapt 'androidx.room:room-compiler:2.2.6'
-    //encryption database
-    implementation "net.zetetic:android-database-sqlcipher:4.4.0"
-    implementation "androidx.sqlite:sqlite-ktx:2.1.0"
-    //lifecycle
     api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
-    api "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
-    //paging
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     api "androidx.paging:paging-runtime-ktx:2.1.2"
-
+    kapt 'androidx.room:room-compiler:2.2.6'
 }
